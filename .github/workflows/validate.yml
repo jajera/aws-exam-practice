@@ -1,0 +1,62 @@
+name: Validate Workflows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-workflows:
+    name: Validate GitHub Workflows
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate workflow files
+        run: |
+          # Basic YAML syntax validation using Python
+          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+            if [ -f "$file" ]; then
+              echo "Validating $file"
+              if ! python3 -c "import yaml; yaml.safe_load(open('$file'))" 2>/dev/null; then
+                echo "❌ $file: Invalid YAML syntax"
+                exit 1
+              else
+                echo "✅ $file: Valid YAML syntax"
+              fi
+            fi
+          done
+
+      - name: Check workflow structure
+        run: |
+          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+            if [ -f "$file" ]; then
+              echo "Checking structure of $file"
+              # Check for required fields using grep
+              if ! grep -q "^name:" "$file"; then
+                echo "❌ $file: Missing 'name' field"
+                exit 1
+              fi
+              if ! grep -q "^on:" "$file"; then
+                echo "❌ $file: Missing 'on' field"
+                exit 1
+              fi
+              if ! grep -q "^jobs:" "$file"; then
+                echo "❌ $file: Missing 'jobs' field"
+                exit 1
+              fi
+              echo "✅ $file: Has required fields"
+            fi
+          done
+
+      - name: Check workflow syntax
+        run: |
+          # Install action-validator if available
+          if command -v action-validator &> /dev/null; then
+            action-validator .github/workflows/*.yml
+          else
+            echo "action-validator not available, skipping syntax check"
+          fi
