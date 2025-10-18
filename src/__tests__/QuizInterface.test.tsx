@@ -1,9 +1,20 @@
-import QuizInterface from "@/components/QuizInterface";
-import { ExamData, QuizState } from "@/types/exam";
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
+import QuizInterface from "../components/QuizInterface";
+import { AppSettings, ExamData, QuizState } from "../types/exam";
+
+const mockSettings: AppSettings = {
+  theme: "light",
+  randomizeQuestions: false,
+  randomizeChoices: false,
+  narratorEnabled: false,
+  narratorVoice: "",
+  narratorRate: 1.0,
+  narratorPitch: 1.0,
+};
 
 const mockExamData: ExamData = {
   examId: "saa-c03",
@@ -85,6 +96,7 @@ const mockHandlers = {
   onComplete: jest.fn(),
   onExitExam: jest.fn(),
   onEndExam: jest.fn(),
+  settings: mockSettings,
 };
 
 describe("QuizInterface", () => {
@@ -353,6 +365,7 @@ describe("QuizInterface", () => {
         onComplete={jest.fn()}
         onExitExam={jest.fn()}
         onEndExam={mockOnEndExam}
+        settings={mockSettings}
       />
     );
 
@@ -380,7 +393,8 @@ describe("QuizInterface", () => {
         onPreviousQuestion={jest.fn()}
         onComplete={jest.fn()}
         onExitExam={jest.fn()}
-        onEndExam={mockOnEndExam}
+        onEndExam={jest.fn()}
+        settings={mockSettings}
       />
     );
 
@@ -418,10 +432,11 @@ describe("QuizInterface", () => {
         onComplete={jest.fn()}
         onExitExam={jest.fn()}
         onEndExam={jest.fn()}
+        settings={mockSettings}
       />
     );
 
-    expect(screen.getByText("Exam Domains")).toBeInTheDocument();
+    expect(screen.getByText("Exam Domains")).not.toBeNull();
   });
 
   it("should display multiple domains correctly", () => {
@@ -451,10 +466,13 @@ describe("QuizInterface", () => {
         onAnswerSelect={jest.fn()}
         onNextQuestion={jest.fn()}
         onPreviousQuestion={jest.fn()}
+        onComplete={jest.fn()}
+        onExitExam={jest.fn()}
         onEndExam={jest.fn()}
+        settings={mockSettings}
       />
     );
 
-    expect(screen.getByText("Exam Domains")).toBeInTheDocument();
+    expect(screen.getByText("Exam Domains")).not.toBeNull();
   });
 });

@@ -1,7 +1,8 @@
-import ResultsSummary from "@/components/ResultsSummary";
-import { ExamData, ExamResult } from "@/types/exam";
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render, screen } from "@testing-library/react";
+import React from "react";
+import ResultsSummary from "../components/ResultsSummary";
+import { ExamData, ExamResult } from "../types/exam";
 
 // Mock window.confirm
 const mockConfirm = jest.fn();

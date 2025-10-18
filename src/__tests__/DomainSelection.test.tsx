@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import React from "react";
 import DomainSelection from "../components/DomainSelection";
 import { DomainOption, ExamData } from "../types/exam";
 
@@ -72,13 +73,13 @@ describe("DomainSelection", () => {
       screen.getByText(
         "Select Domains for AWS Certified Solutions Architect – Associate (SAA-C03)"
       )
-    ).toBeInTheDocument();
+    ).not.toBeNull();
     expect(
       screen.getByText(
         "Choose which domains you want to focus on. All domains are selected by default."
       )
-    ).toBeInTheDocument();
-    expect(screen.getByText("← Back to Difficulty")).toBeInTheDocument();
+    ).not.toBeNull();
+    expect(screen.getByText("← Back to Difficulty")).not.toBeNull();
   });
 
   it("should display domain options with correct information", () => {
@@ -92,12 +93,10 @@ describe("DomainSelection", () => {
       />
     );
 
-    expect(screen.getByText("Design Secure Architectures")).toBeInTheDocument();
-    expect(screen.getByText("30% of exam")).toBeInTheDocument();
-    expect(
-      screen.getByText("Design Resilient Architectures")
-    ).toBeInTheDocument();
-    expect(screen.getByText("26% of exam")).toBeInTheDocument();
+    expect(screen.getByText("Design Secure Architectures")).not.toBeNull();
+    expect(screen.getByText("30% of exam")).not.toBeNull();
+    expect(screen.getByText("Design Resilient Architectures")).not.toBeNull();
+    expect(screen.getByText("26% of exam")).not.toBeNull();
   });
 
   it("should display subcategories for each domain", () => {
@@ -111,10 +110,10 @@ describe("DomainSelection", () => {
       />
     );
 
-    expect(screen.getByText("Security Groups")).toBeInTheDocument();
-    expect(screen.getByText("IAM")).toBeInTheDocument();
-    expect(screen.getByText("Auto Scaling")).toBeInTheDocument();
-    expect(screen.getByText("Load Balancing")).toBeInTheDocument();
+    expect(screen.getByText("Security Groups")).not.toBeNull();
+    expect(screen.getByText("IAM")).not.toBeNull();
+    expect(screen.getByText("Auto Scaling")).not.toBeNull();
+    expect(screen.getByText("Load Balancing")).not.toBeNull();
   });
 
   it("should call onDomainToggle when domain is clicked", () => {
@@ -208,7 +207,7 @@ describe("DomainSelection", () => {
     );
 
     const startButton = screen.getByText(/Start Quiz/);
-    expect(startButton).toBeDisabled();
+    expect(startButton).toHaveProperty("disabled", true);
   });
 
   it("should show correct count of selected domains", () => {
@@ -222,9 +221,7 @@ describe("DomainSelection", () => {
       />
     );
 
-    expect(
-      screen.getByText("Start Quiz (1 domain selected)")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Start Quiz (1 domain selected)")).not.toBeNull();
   });
 
   it("should show plural form for multiple domains", () => {
@@ -243,9 +240,7 @@ describe("DomainSelection", () => {
       />
     );
 
-    expect(
-      screen.getByText("Start Quiz (2 domains selected)")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Start Quiz (2 domains selected)")).not.toBeNull();
   });
 
   it("should prevent event propagation when checkbox is clicked", () => {

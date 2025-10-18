@@ -1,9 +1,9 @@
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import {
   generateExamConfig,
   getAvailableExamFiles,
   getExamConfig,
-} from "@/config/examConfig";
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+} from "../config/examConfig";
 
 // Mock fetch
 global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;

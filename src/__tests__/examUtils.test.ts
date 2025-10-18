@@ -1,11 +1,11 @@
+import { describe, expect, it, jest } from "@jest/globals";
 import {
   calculateQuestionScore,
   filterQuestionsByDomains,
   getSelectedDomains,
   getSelectedDomainsCount,
   processQuestions,
-} from "@/utils/examUtils";
-import { describe, expect, it, jest } from "@jest/globals";
+} from "../utils/examUtils";
 
 // Mock shuffle functions
 jest.mock("@/utils/arrayUtils", () => ({

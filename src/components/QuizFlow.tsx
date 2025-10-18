@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ExamData, ExamResult, QuizState } from "../types/exam";
+import { AppSettings, ExamData, ExamResult, QuizState } from "../types/exam";
 import { removeCompletedExams, saveExamProgress } from "../utils/examStorage";
 import { calculateQuestionScore } from "../utils/examUtils";
 import QuizInterface from "./QuizInterface";
@@ -9,12 +9,14 @@ interface QuizFlowProps {
   examData: ExamData;
   onNewExam: () => void;
   onBackToExamSelection: () => void;
+  settings: AppSettings;
 }
 
 export default function QuizFlow({
   examData,
   onNewExam,
   onBackToExamSelection,
+  settings,
 }: QuizFlowProps) {
   const [quizState, setQuizState] = useState<QuizState>({
     currentQuestionIndex: 0,
@@ -159,6 +161,7 @@ export default function QuizFlow({
         onComplete={handleQuizComplete}
         onExitExam={handleExitExam}
         onEndExam={handleEndExam}
+        settings={settings}
       />
     );
   }

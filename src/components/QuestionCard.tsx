@@ -1,11 +1,18 @@
-import React from "react";
-import { Question } from "../types/exam";
+import React, { useEffect, useState } from "react";
+import { AppSettings, Question } from "../types/exam";
+import {
+  formatQuestionForNarration,
+  getNarratorSettings,
+  speakText,
+  stopSpeaking,
+} from "../utils/narratorUtils";
 
 interface QuestionCardProps {
   question: Question;
   selectedAnswer?: string | string[];
   onAnswerSelect: (answer: string | string[]) => void;
   showExplanations: boolean;
+  settings: AppSettings;
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({
@@ -13,7 +20,42 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   selectedAnswer,
   onAnswerSelect,
   showExplanations,
+  settings,
 }) => {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Auto-stop narration when question changes
+  useEffect(() => {
+    stopSpeaking();
+    setIsSpeaking(false);
+  }, [question.id]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopSpeaking();
+    };
+  }, []);
+
+  const handleReadQuestion = async () => {
+    if (isSpeaking) {
+      stopSpeaking();
+      setIsSpeaking(false);
+      return;
+    }
+
+    try {
+      setIsSpeaking(true);
+      const narrationText = formatQuestionForNarration(question);
+      const narratorSettings = getNarratorSettings(settings);
+
+      await speakText(narrationText, narratorSettings);
+      setIsSpeaking(false);
+    } catch (error) {
+      console.error("Failed to speak question:", error);
+      setIsSpeaking(false);
+    }
+  };
   const correctAnswersCount = question.choices.filter(
     (choice) => choice.is_correct
   ).length;
@@ -87,9 +129,24 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
     <div className="card">
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm font-semibold text-primary-700 dark:text-primary-300 bg-primary-100 dark:bg-primary-900/30 px-4 py-2 rounded-full border border-primary-200 dark:border-primary-700">
-            Question {question.id}
-          </span>
+          <div className="flex items-center space-x-3">
+            <span className="text-sm font-semibold text-primary-700 dark:text-primary-300 bg-primary-100 dark:bg-primary-900/30 px-4 py-2 rounded-full border border-primary-200 dark:border-primary-700">
+              Question {question.id}
+            </span>
+            {settings.narratorEnabled && (
+              <button
+                onClick={handleReadQuestion}
+                className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors duration-200 ${
+                  isSpeaking
+                    ? "text-red-600 dark:text-red-400 border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20"
+                    : "text-primary-600 dark:text-primary-400 border-primary-300 dark:border-primary-600 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-800/30"
+                }`}
+                title={isSpeaking ? "Stop Reading" : "Read Question"}
+              >
+                {isSpeaking ? "⏹️ Stop Reading" : "🔊 Read Question"}
+              </button>
+            )}
+          </div>
           <div className="text-sm text-slate-500 dark:text-slate-400">
             <span className="font-medium">{question.domain}</span>
             {question.subcategory && (

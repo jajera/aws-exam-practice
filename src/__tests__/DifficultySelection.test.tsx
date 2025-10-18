@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import React from "react";
 import DifficultySelection from "../components/DifficultySelection";
 import { ExamData } from "../types/exam";
 
@@ -136,11 +137,11 @@ describe("DifficultySelection", () => {
       />
     );
 
-    expect(screen.getByText("Select Difficulty Level")).toBeInTheDocument();
+    expect(screen.getByText("Select Difficulty Level")).not.toBeNull();
     expect(
       screen.getByText("Choose the difficulty level for your practice exam.")
-    ).toBeInTheDocument();
-    expect(screen.getByText("← Back to Exams")).toBeInTheDocument();
+    ).not.toBeNull();
+    expect(screen.getByText("← Back to Exams")).not.toBeNull();
   });
 
   it("should display available exams with correct information", () => {
@@ -157,13 +158,13 @@ describe("DifficultySelection", () => {
       screen.getByText(
         "AWS Certified Solutions Architect – Associate (SAA-C03) - Basic"
       )
-    ).toBeInTheDocument();
+    ).not.toBeNull();
     expect(
       screen.getAllByText(
         "Practice questions for AWS Certified Solutions Architect – Associate (SAA-C03)"
       )
     ).toHaveLength(2);
-    expect(screen.getByText("1 Questions")).toBeInTheDocument();
+    expect(screen.getByText("1 Questions")).not.toBeNull();
     expect(screen.getAllByText("1 Domain")).toHaveLength(2);
 
     // Check second exam
@@ -171,8 +172,8 @@ describe("DifficultySelection", () => {
       screen.getByText(
         "AWS Certified Solutions Architect – Associate (SAA-C03) - Advanced"
       )
-    ).toBeInTheDocument();
-    expect(screen.getByText("2 Questions")).toBeInTheDocument();
+    ).not.toBeNull();
+    expect(screen.getByText("2 Questions")).not.toBeNull();
   });
 
   it("should call onDifficultySelect when exam is clicked", () => {
@@ -219,8 +220,8 @@ describe("DifficultySelection", () => {
     );
 
     const examCards = screen.getAllByText(/Questions/);
-    expect(examCards[0]).toHaveTextContent("1 Questions");
-    expect(examCards[1]).toHaveTextContent("2 Questions");
+    expect(examCards[0].textContent).toBe("1 Questions");
+    expect(examCards[1].textContent).toBe("2 Questions");
   });
 
   it("should display icons when available", () => {
@@ -245,7 +246,7 @@ describe("DifficultySelection", () => {
       />
     );
 
-    expect(screen.getByText("Select Difficulty Level")).toBeInTheDocument();
-    expect(screen.queryByText(/Questions/)).not.toBeInTheDocument();
+    expect(screen.getByText("Select Difficulty Level")).not.toBeNull();
+    expect(screen.queryByText(/Questions/)).toBeNull();
   });
 });

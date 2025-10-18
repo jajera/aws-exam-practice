@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import React from "react";
 import QuizFlow from "../components/QuizFlow";
-import { ExamData } from "../types/exam";
+import { AppSettings, ExamData } from "../types/exam";
 
 // Mock the exam storage
 jest.mock("../utils/examStorage", () => ({
@@ -13,6 +14,16 @@ jest.mock("../utils/examStorage", () => ({
 
 // Mock window.confirm
 global.confirm = jest.fn() as jest.MockedFunction<typeof confirm>;
+
+const mockSettings: AppSettings = {
+  theme: "light",
+  randomizeQuestions: false,
+  randomizeChoices: false,
+  narratorEnabled: false,
+  narratorVoice: "",
+  narratorRate: 1.0,
+  narratorPitch: 1.0,
+};
 
 const mockExamData: ExamData = {
   examId: "saa-c03",
@@ -89,11 +100,12 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
-    expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
-    expect(screen.getByText("What is the correct answer?")).toBeInTheDocument();
+    expect(screen.getByText("Question 1 of 2")).not.toBeNull();
+    expect(screen.getByText("What is the correct answer?")).not.toBeNull();
   });
 
   it("should handle answer selection", () => {
@@ -102,13 +114,14 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
     const answerButton = screen.getByText("Option A");
     fireEvent.click(answerButton);
 
-    expect(screen.getByText("Next Question")).toBeInTheDocument();
+    expect(screen.getByText("Next Question")).not.toBeNull();
   });
 
   it("should handle next question navigation", () => {
@@ -117,6 +130,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -127,8 +141,8 @@ describe("QuizFlow", () => {
     const nextButton = screen.getByText("Next Question");
     fireEvent.click(nextButton);
 
-    expect(screen.getByText("Question 2 of 2")).toBeInTheDocument();
-    expect(screen.getByText("What is another question?")).toBeInTheDocument();
+    expect(screen.getByText("Question 2 of 2")).not.toBeNull();
+    expect(screen.getByText("What is another question?")).not.toBeNull();
   });
 
   it("should handle previous question navigation", () => {
@@ -137,6 +151,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -151,8 +166,8 @@ describe("QuizFlow", () => {
     const prevButton = screen.getByText("Previous");
     fireEvent.click(prevButton);
 
-    expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
-    expect(screen.getByText("What is the correct answer?")).toBeInTheDocument();
+    expect(screen.getByText("Question 1 of 2")).not.toBeNull();
+    expect(screen.getByText("What is the correct answer?")).not.toBeNull();
   });
 
   it("should complete quiz and show results", async () => {
@@ -161,6 +176,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -180,7 +196,7 @@ describe("QuizFlow", () => {
 
     // Should show results
     await waitFor(() => {
-      expect(screen.getByText("Exam Complete!")).toBeInTheDocument();
+      expect(screen.getByText("Exam Complete!")).not.toBeNull();
     });
   });
 
@@ -190,6 +206,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -210,6 +227,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -228,6 +246,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -240,7 +259,7 @@ describe("QuizFlow", () => {
 
     // Should show results
     await waitFor(() => {
-      expect(screen.getByText("Exam Complete!")).toBeInTheDocument();
+      expect(screen.getByText("Exam Complete!")).not.toBeNull();
     });
   });
 
@@ -252,6 +271,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -261,7 +281,7 @@ describe("QuizFlow", () => {
     expect(global.confirm).toHaveBeenCalledWith(
       "Are you sure you want to end the exam and view your results? Any unanswered questions will be marked as incorrect."
     );
-    expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Question 1 of 2")).not.toBeNull();
   });
 
   it("should handle retry exam", async () => {
@@ -270,6 +290,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -288,7 +309,7 @@ describe("QuizFlow", () => {
 
     // Wait for results
     await waitFor(() => {
-      expect(screen.getByText("Exam Complete!")).toBeInTheDocument();
+      expect(screen.getByText("Exam Complete!")).not.toBeNull();
     });
 
     // Click retry
@@ -296,7 +317,7 @@ describe("QuizFlow", () => {
     fireEvent.click(retryButton);
 
     // Should start quiz again
-    expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
+    expect(screen.getByText("Question 1 of 2")).not.toBeNull();
   });
 
   it("should handle new exam", async () => {
@@ -305,6 +326,7 @@ describe("QuizFlow", () => {
         examData={mockExamData}
         onNewExam={mockOnNewExam}
         onBackToExamSelection={mockOnBackToExamSelection}
+        settings={mockSettings}
       />
     );
 
@@ -323,7 +345,7 @@ describe("QuizFlow", () => {
 
     // Wait for results
     await waitFor(() => {
-      expect(screen.getByText("Exam Complete!")).toBeInTheDocument();
+      expect(screen.getByText("Exam Complete!")).not.toBeNull();
     });
 
     // Click new exam

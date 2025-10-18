@@ -1,8 +1,9 @@
-import SettingsPanel from "@/components/SettingsPanel";
-import { AppSettings } from "@/types/exam";
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import React from "react";
+import SettingsPanel from "../components/SettingsPanel";
+import { AppSettings } from "../types/exam";
 
 // Mock the theme utils
 jest.mock("@/utils/themeUtils", () => ({
@@ -13,6 +14,10 @@ const mockSettings: AppSettings = {
   theme: "light",
   randomizeQuestions: false,
   randomizeChoices: false,
+  narratorEnabled: false,
+  narratorVoice: "",
+  narratorRate: 1.0,
+  narratorPitch: 1.0,
 };
 
 const mockOnClose = jest.fn();

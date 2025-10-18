@@ -2,7 +2,15 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import QuestionCard from "../components/QuestionCard";
-import { Question } from "../types/exam";
+import { AppSettings, Question } from "../types/exam";
+
+// Mock narrator utilities
+jest.mock("../utils/narratorUtils", () => ({
+  formatQuestionForNarration: jest.fn(),
+  speakText: jest.fn(),
+  stopSpeaking: jest.fn(),
+  getNarratorSettings: jest.fn(),
+}));
 
 // Mock question data
 const mockQuestion: Question = {
@@ -75,6 +83,15 @@ const mockMultipleChoiceQuestion: Question = {
 
 describe("QuestionCard", () => {
   const mockOnAnswerSelect = jest.fn();
+  const mockSettings: AppSettings = {
+    theme: "light",
+    randomizeQuestions: false,
+    randomizeChoices: false,
+    narratorEnabled: true,
+    narratorVoice: "",
+    narratorRate: 1.0,
+    narratorPitch: 1.0,
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -87,16 +104,17 @@ describe("QuestionCard", () => {
           question={mockQuestion}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       expect(
         screen.getByText("What is the best AWS service for storing files?")
-      ).toBeInTheDocument();
-      expect(screen.getByText("Amazon S3")).toBeInTheDocument();
-      expect(screen.getByText("Amazon EBS")).toBeInTheDocument();
-      expect(screen.getByText("Amazon EFS")).toBeInTheDocument();
-      expect(screen.getByText("Amazon RDS")).toBeInTheDocument();
+      ).not.toBeNull();
+      expect(screen.getByText("Amazon S3")).not.toBeNull();
+      expect(screen.getByText("Amazon EBS")).not.toBeNull();
+      expect(screen.getByText("Amazon EFS")).not.toBeNull();
+      expect(screen.getByText("Amazon RDS")).not.toBeNull();
     });
 
     it("should call onAnswerSelect with single answer when choice is clicked", () => {
@@ -105,6 +123,7 @@ describe("QuestionCard", () => {
           question={mockQuestion}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
@@ -119,14 +138,15 @@ describe("QuestionCard", () => {
           selectedAnswer="A"
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       const selectedButton = screen.getByText("Amazon S3").closest("button");
-      expect(selectedButton).toHaveClass(
-        "border-primary-600",
-        "bg-primary-200"
+      expect(selectedButton?.classList.contains("border-primary-600")).toBe(
+        true
       );
+      expect(selectedButton?.classList.contains("bg-primary-200")).toBe(true);
     });
 
     it("should show explanations when showExplanations is true", () => {
@@ -136,13 +156,14 @@ describe("QuestionCard", () => {
           selectedAnswer="A"
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={true}
+          settings={mockSettings}
         />
       );
 
       expect(
         screen.getByText("S3 is perfect for object storage")
-      ).toBeInTheDocument();
-      expect(screen.getByText("EBS is for block storage")).toBeInTheDocument();
+      ).not.toBeNull();
+      expect(screen.getByText("EBS is for block storage")).not.toBeNull();
     });
 
     it("should show correct/incorrect styling when explanations are shown", () => {
@@ -152,14 +173,17 @@ describe("QuestionCard", () => {
           selectedAnswer="B"
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={true}
+          settings={mockSettings}
         />
       );
 
       const correctButton = screen.getByText("Amazon S3").closest("button");
       const incorrectButton = screen.getByText("Amazon EBS").closest("button");
 
-      expect(correctButton).toHaveClass("choice-correct");
-      expect(incorrectButton).toHaveClass("choice-incorrect");
+      expect(correctButton?.classList.contains("choice-correct")).toBe(true);
+      expect(incorrectButton?.classList.contains("choice-incorrect")).toBe(
+        true
+      );
     });
   });
 
@@ -170,12 +194,13 @@ describe("QuestionCard", () => {
           question={mockMultipleChoiceQuestion}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       expect(
         screen.getByText("Select 2 answers (0/2 selected)")
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
 
     it("should call onAnswerSelect with array when choice is clicked", () => {
@@ -184,6 +209,7 @@ describe("QuestionCard", () => {
           question={mockMultipleChoiceQuestion}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
@@ -198,6 +224,7 @@ describe("QuestionCard", () => {
           selectedAnswer={["A"]}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
@@ -212,6 +239,7 @@ describe("QuestionCard", () => {
           selectedAnswer={["A", "B"]}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
@@ -226,6 +254,7 @@ describe("QuestionCard", () => {
           selectedAnswer={["A", "B"]}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
@@ -240,11 +269,12 @@ describe("QuestionCard", () => {
           selectedAnswer={["A", "B"]}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       const disabledButton = screen.getByText("Amazon S3").closest("button");
-      expect(disabledButton).toBeDisabled();
+      expect(disabledButton).toHaveProperty("disabled", true);
     });
 
     it("should show correct selection count", () => {
@@ -254,12 +284,13 @@ describe("QuestionCard", () => {
           selectedAnswer={["A"]}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       expect(
         screen.getByText("Select 2 answers (1/2 selected)")
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
 
     it("should show checkboxes for multiple choice questions", () => {
@@ -269,16 +300,17 @@ describe("QuestionCard", () => {
           selectedAnswer={["A"]}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       // Check that the checkbox container exists and has the right structure
       const button = screen.getByText("Amazon EC2").closest("button");
-      expect(button).toBeInTheDocument();
+      expect(button).not.toBeNull();
 
       // Check that the checkbox div exists within the button
       const checkboxContainer = button?.querySelector("div.flex-shrink-0");
-      expect(checkboxContainer).toBeInTheDocument();
+      expect(checkboxContainer).not.toBeNull();
     });
 
     it("should handle array selectedAnswer correctly", () => {
@@ -288,12 +320,13 @@ describe("QuestionCard", () => {
           selectedAnswer={["A", "B"]}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       expect(
         screen.getByText("Select 2 answers (2/2 selected)")
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
 
     it("should handle string selectedAnswer for multiple choice", () => {
@@ -303,12 +336,13 @@ describe("QuestionCard", () => {
           selectedAnswer="A"
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       expect(
         screen.getByText("Select 2 answers (1/2 selected)")
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
 
     it("should handle undefined selectedAnswer for multiple choice", () => {
@@ -317,12 +351,13 @@ describe("QuestionCard", () => {
           question={mockMultipleChoiceQuestion}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       expect(
         screen.getByText("Select 2 answers (0/2 selected)")
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
   });
 
@@ -341,11 +376,12 @@ describe("QuestionCard", () => {
           question={questionWithNoCorrect}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       // Should render as single choice since correctAnswersCount = 0
-      expect(screen.queryByText(/Select \d+ answers/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Select \d+ answers/)).toBeNull();
     });
 
     it("should handle question with 3 correct answers", () => {
@@ -362,12 +398,13 @@ describe("QuestionCard", () => {
           question={questionWithThreeCorrect}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       expect(
         screen.getByText("Select 3 answers (0/3 selected)")
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
 
     it("should handle disabled state correctly", () => {
@@ -377,16 +414,129 @@ describe("QuestionCard", () => {
           selectedAnswer={["A", "B"]}
           onAnswerSelect={mockOnAnswerSelect}
           showExplanations={false}
+          settings={mockSettings}
         />
       );
 
       const allButtons = screen.getAllByRole("button");
-      const disabledButtons = allButtons.filter((button) => button.disabled);
-      const enabledButtons = allButtons.filter((button) => !button.disabled);
+      // Filter out the narrator button to only test choice buttons
+      const choiceButtons = allButtons.filter((button) =>
+        button.textContent?.includes("Amazon")
+      );
+      const disabledButtons = choiceButtons.filter(
+        (button) => (button as HTMLButtonElement).disabled
+      );
+      const enabledButtons = choiceButtons.filter(
+        (button) => !(button as HTMLButtonElement).disabled
+      );
 
       // Only selected buttons should be enabled when at limit
       expect(enabledButtons).toHaveLength(2); // A and B
       expect(disabledButtons).toHaveLength(2); // C and D
+    });
+  });
+
+  describe("Narrator Functionality", () => {
+    const {
+      formatQuestionForNarration,
+      speakText,
+      stopSpeaking,
+      getNarratorSettings,
+    } = require("../utils/narratorUtils");
+
+    it("should show Read Question button when narrator is enabled", () => {
+      render(
+        <QuestionCard
+          question={mockQuestion}
+          onAnswerSelect={mockOnAnswerSelect}
+          showExplanations={false}
+          settings={mockSettings}
+        />
+      );
+
+      expect(screen.getByText("🔊 Read Question")).not.toBeNull();
+    });
+
+    it("should hide Read Question button when narrator is disabled", () => {
+      const disabledSettings = { ...mockSettings, narratorEnabled: false };
+
+      render(
+        <QuestionCard
+          question={mockQuestion}
+          onAnswerSelect={mockOnAnswerSelect}
+          showExplanations={false}
+          settings={disabledSettings}
+        />
+      );
+
+      expect(screen.queryByText("🔊 Read Question")).toBeNull();
+    });
+
+    it("should call narrator functions when Read Question button is clicked", async () => {
+      formatQuestionForNarration.mockReturnValue("Test narration text");
+      getNarratorSettings.mockReturnValue({
+        enabled: true,
+        voice: "",
+        rate: 1,
+        pitch: 1,
+      });
+      speakText.mockResolvedValue(undefined);
+
+      render(
+        <QuestionCard
+          question={mockQuestion}
+          onAnswerSelect={mockOnAnswerSelect}
+          showExplanations={false}
+          settings={mockSettings}
+        />
+      );
+
+      fireEvent.click(screen.getByText("🔊 Read Question"));
+
+      expect(formatQuestionForNarration).toHaveBeenCalledWith(mockQuestion);
+      expect(getNarratorSettings).toHaveBeenCalledWith(mockSettings);
+      expect(speakText).toHaveBeenCalledWith("Test narration text", {
+        enabled: true,
+        voice: "",
+        rate: 1,
+        pitch: 1,
+      });
+    });
+
+    it("should show Stop Reading button when speaking", () => {
+      render(
+        <QuestionCard
+          question={mockQuestion}
+          onAnswerSelect={mockOnAnswerSelect}
+          showExplanations={false}
+          settings={mockSettings}
+        />
+      );
+
+      // Click to start speaking (mocked)
+      fireEvent.click(screen.getByText("🔊 Read Question"));
+
+      // The button text should change to Stop Reading
+      expect(screen.getByText("⏹️ Stop Reading")).not.toBeNull();
+    });
+
+    it("should call stopSpeaking when Stop Reading button is clicked", () => {
+      render(
+        <QuestionCard
+          question={mockQuestion}
+          onAnswerSelect={mockOnAnswerSelect}
+          showExplanations={false}
+          settings={mockSettings}
+        />
+      );
+
+      // Click to start speaking
+      fireEvent.click(screen.getByText("🔊 Read Question"));
+
+      // Click to stop speaking
+      fireEvent.click(screen.getByText("⏹️ Stop Reading"));
+
+      expect(stopSpeaking).toHaveBeenCalled();
     });
   });
 });

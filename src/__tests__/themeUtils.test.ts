@@ -1,10 +1,10 @@
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import {
   applyTheme,
   getInitialSettings,
   getSystemTheme,
   saveSettings,
-} from "@/utils/themeUtils";
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+} from "../utils/themeUtils";
 
 // Use the global localStorage mock from setupTests
 let localStorageMock: Storage;
@@ -54,6 +54,10 @@ describe("Theme Utils", () => {
         theme: "system",
         randomizeQuestions: false,
         randomizeChoices: false,
+        narratorEnabled: true,
+        narratorVoice: "",
+        narratorRate: 1.0,
+        narratorPitch: 1.0,
       });
     });
 
@@ -62,6 +66,10 @@ describe("Theme Utils", () => {
         theme: "dark" as const,
         randomizeQuestions: true,
         randomizeChoices: true,
+        narratorEnabled: true,
+        narratorVoice: "",
+        narratorRate: 1.0,
+        narratorPitch: 1.0,
       };
 
       // Set saved settings in localStorage
@@ -80,6 +88,10 @@ describe("Theme Utils", () => {
         theme: "system",
         randomizeQuestions: false,
         randomizeChoices: false,
+        narratorEnabled: true,
+        narratorVoice: "",
+        narratorRate: 1.0,
+        narratorPitch: 1.0,
       });
     });
 
@@ -93,6 +105,10 @@ describe("Theme Utils", () => {
         theme: "system",
         randomizeQuestions: false,
         randomizeChoices: false,
+        narratorEnabled: true,
+        narratorVoice: "",
+        narratorRate: 1.0,
+        narratorPitch: 1.0,
       });
 
       global.window = originalWindow;
@@ -105,6 +121,10 @@ describe("Theme Utils", () => {
         theme: "dark" as const,
         randomizeQuestions: true,
         randomizeChoices: false,
+        narratorEnabled: true,
+        narratorVoice: "",
+        narratorRate: 1.0,
+        narratorPitch: 1.0,
       };
 
       saveSettings(settings);
@@ -119,6 +139,10 @@ describe("Theme Utils", () => {
         theme: "light" as const,
         randomizeQuestions: false,
         randomizeChoices: false,
+        narratorEnabled: true,
+        narratorVoice: "",
+        narratorRate: 1.0,
+        narratorPitch: 1.0,
       };
 
       saveSettings(settings);
@@ -137,6 +161,10 @@ describe("Theme Utils", () => {
           theme: "dark",
           randomizeQuestions: true,
           randomizeChoices: false,
+          narratorEnabled: true,
+          narratorVoice: "",
+          narratorRate: 1.0,
+          narratorPitch: 1.0,
         });
       }).not.toThrow();
     });

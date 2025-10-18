@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import React from "react";
 import DomainSelection from "../components/DomainSelection";
 import { DomainOption, ExamData } from "../types/exam";
 
@@ -108,7 +109,7 @@ describe("Start Quiz Button", () => {
     );
 
     const startQuizButton = screen.getByText("Start Quiz (0 domains selected)");
-    expect(startQuizButton).toBeDisabled();
+    expect(startQuizButton).toHaveProperty("disabled", true);
   });
 
   it("should show correct count of selected domains", () => {
@@ -122,8 +123,6 @@ describe("Start Quiz Button", () => {
       />
     );
 
-    expect(
-      screen.getByText("Start Quiz (2 domains selected)")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Start Quiz (2 domains selected)")).not.toBeNull();
   });
 });

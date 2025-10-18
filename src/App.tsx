@@ -338,6 +338,7 @@ function App() {
             examData={examData}
             onNewExam={handleNewExam}
             onBackToExamSelection={handleBackToExamSelection}
+            settings={settings}
           />
         )}
 
