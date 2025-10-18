@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,16 +9,16 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: 'data/*.json',
-          dest: 'data'
-        }
-      ]
-    })
+          src: "data/*.json",
+          dest: "data",
+        },
+      ],
+    }),
   ],
-  base: '/aws-exam-practice/',
+  base: "/aws-exam-practice/",
   build: {
-    outDir: 'dist',
-    sourcemap: true
+    outDir: "dist",
+    sourcemap: true,
   },
-  publicDir: 'public'
-})
+  publicDir: "public",
+});
