@@ -1,13 +1,14 @@
-import App from "@/App";
-import * as examStorage from "@/utils/examStorage";
-import * as themeUtils from "@/utils/themeUtils";
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
+import App from "../App";
+import * as examStorage from "../utils/examStorage";
+import * as themeUtils from "../utils/themeUtils";
 
 // Mock the exam storage utilities
-jest.mock("@/utils/examStorage", () => ({
+jest.mock("../utils/examStorage", () => ({
   getSavedExams: jest.fn(),
   cleanupDuplicateExams: jest.fn(),
   removeCompletedExams: jest.fn(),
@@ -16,14 +17,14 @@ jest.mock("@/utils/examStorage", () => ({
 }));
 
 // Mock theme utilities
-jest.mock("@/utils/themeUtils", () => ({
+jest.mock("../utils/themeUtils", () => ({
   getInitialSettings: jest.fn(),
   applyTheme: jest.fn(),
   saveSettings: jest.fn(),
 }));
 
 // Mock exam config
-jest.mock("@/config/examConfig", () => ({
+jest.mock("../config/examConfig", () => ({
   availableExams: [
     {
       id: "saa-c03",
@@ -54,6 +55,10 @@ describe("App Component - Edge Cases", () => {
       theme: "light",
       randomizeQuestions: false,
       randomizeChoices: false,
+      narratorEnabled: true,
+      narratorVoice: "",
+      narratorRate: 1.0,
+      narratorPitch: 1.0,
     });
     (themeUtils.applyTheme as jest.Mock).mockImplementation(() => {});
     (themeUtils.saveSettings as jest.Mock).mockImplementation(() => {});
@@ -71,7 +76,7 @@ describe("App Component - Edge Cases", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Open settings
@@ -79,7 +84,7 @@ describe("App Component - Edge Cases", () => {
     await userEvent.click(settingsButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Settings")).toBeInTheDocument();
+      expect(screen.getByText("Settings")).not.toBeNull();
     });
 
     // Change theme to system
@@ -95,6 +100,10 @@ describe("App Component - Edge Cases", () => {
       theme: "system",
       randomizeQuestions: false,
       randomizeChoices: false,
+      narratorEnabled: true,
+      narratorVoice: "",
+      narratorRate: 1.0,
+      narratorPitch: 1.0,
     });
   });
 
@@ -102,7 +111,7 @@ describe("App Component - Edge Cases", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Open settings
@@ -110,7 +119,7 @@ describe("App Component - Edge Cases", () => {
     await userEvent.click(settingsButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Settings")).toBeInTheDocument();
+      expect(screen.getByText("Settings")).not.toBeNull();
     });
 
     // Change answer choices randomization
@@ -131,6 +140,10 @@ describe("App Component - Edge Cases", () => {
       theme: "light",
       randomizeQuestions: false,
       randomizeChoices: true,
+      narratorEnabled: true,
+      narratorVoice: "",
+      narratorRate: 1.0,
+      narratorPitch: 1.0,
     });
   });
 
@@ -138,7 +151,7 @@ describe("App Component - Edge Cases", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Open settings
@@ -146,7 +159,7 @@ describe("App Component - Edge Cases", () => {
     await userEvent.click(settingsButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Settings")).toBeInTheDocument();
+      expect(screen.getByText("Settings")).not.toBeNull();
     });
 
     // Change both randomization settings
@@ -174,6 +187,10 @@ describe("App Component - Edge Cases", () => {
       theme: "light",
       randomizeQuestions: true,
       randomizeChoices: true,
+      narratorEnabled: true,
+      narratorVoice: "",
+      narratorRate: 1.0,
+      narratorPitch: 1.0,
     });
   });
 
@@ -199,11 +216,11 @@ describe("App Component - Edge Cases", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Should show saved exams
-    expect(screen.getByText("Saved Exams")).toBeInTheDocument();
+    expect(screen.getByText("Saved Exams")).not.toBeNull();
 
     // Click clear all button
     const clearButton = screen.getByText("Clear All");
@@ -254,14 +271,14 @@ describe("App Component - Edge Cases", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Should show saved exams section
-    expect(screen.getByText("Saved Exams")).toBeInTheDocument();
+    expect(screen.getByText("Saved Exams")).not.toBeNull();
     expect(
       screen.getByText("You have 2 saved exams in progress.")
-    ).toBeInTheDocument();
+    ).not.toBeNull();
 
     // Should show both exam titles
     const examTitles = screen.getAllByText(
@@ -270,8 +287,8 @@ describe("App Component - Edge Cases", () => {
     expect(examTitles).toHaveLength(2);
 
     // Should show progress percentages
-    expect(screen.getByText(/questions \(50%\)/)).toBeInTheDocument();
-    expect(screen.getByText(/questions \(80%\)/)).toBeInTheDocument();
+    expect(screen.getByText(/questions \(50%\)/)).not.toBeNull();
+    expect(screen.getByText(/questions \(80%\)/)).not.toBeNull();
   });
 
   it("should handle empty saved exams array", async () => {
@@ -280,19 +297,19 @@ describe("App Component - Edge Cases", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Should not show saved exams section
-    expect(screen.queryByText("Saved Exams")).not.toBeInTheDocument();
-    expect(screen.queryByText("Clear All")).not.toBeInTheDocument();
+    expect(screen.queryByText("Saved Exams")).toBeNull();
+    expect(screen.queryByText("Clear All")).toBeNull();
   });
 
   it("should handle exam selection with keyboard navigation", async () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Focus on the radio button and press space
@@ -301,18 +318,18 @@ describe("App Component - Edge Cases", () => {
     await userEvent.keyboard(" ");
 
     // Should be selected
-    expect(examRadio).toBeChecked();
+    expect(examRadio).toHaveProperty("checked", true);
 
     // Start button should be enabled
     const startButton = screen.getByText("Start Exam");
-    expect(startButton).not.toBeDisabled();
+    expect(startButton).toHaveProperty("disabled", false);
   });
 
   it("should handle settings form submission with enter key", async () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Open settings
@@ -320,7 +337,7 @@ describe("App Component - Edge Cases", () => {
     await userEvent.click(settingsButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Settings")).toBeInTheDocument();
+      expect(screen.getByText("Settings")).not.toBeNull();
     });
 
     // Change theme to dark
@@ -337,6 +354,10 @@ describe("App Component - Edge Cases", () => {
       theme: "dark",
       randomizeQuestions: false,
       randomizeChoices: false,
+      narratorEnabled: true,
+      narratorVoice: "",
+      narratorRate: 1.0,
+      narratorPitch: 1.0,
     });
   });
 });

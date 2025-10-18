@@ -1,13 +1,14 @@
-import App from "@/App";
-import * as examStorage from "@/utils/examStorage";
-import * as themeUtils from "@/utils/themeUtils";
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
+import App from "../App";
+import * as examStorage from "../utils/examStorage";
+import * as themeUtils from "../utils/themeUtils";
 
 // Mock the exam storage utilities
-jest.mock("@/utils/examStorage", () => ({
+jest.mock("../utils/examStorage", () => ({
   getSavedExams: jest.fn(),
   cleanupDuplicateExams: jest.fn(),
   removeCompletedExams: jest.fn(),
@@ -15,14 +16,14 @@ jest.mock("@/utils/examStorage", () => ({
 }));
 
 // Mock theme utilities
-jest.mock("@/utils/themeUtils", () => ({
+jest.mock("../utils/themeUtils", () => ({
   getInitialSettings: jest.fn(),
   applyTheme: jest.fn(),
   saveSettings: jest.fn(),
 }));
 
 // Mock exam config with actual exam data
-jest.mock("@/config/examConfig", () => ({
+jest.mock("../config/examConfig", () => ({
   availableExams: [
     {
       id: "saa-c03",
@@ -53,6 +54,10 @@ describe("App Component - Basic Tests", () => {
       theme: "light",
       randomizeQuestions: false,
       randomizeChoices: false,
+      narratorEnabled: true,
+      narratorVoice: "",
+      narratorRate: 1.0,
+      narratorPitch: 1.0,
     });
     (themeUtils.applyTheme as jest.Mock).mockImplementation(() => {});
     (themeUtils.saveSettings as jest.Mock).mockImplementation(() => {});
@@ -69,10 +74,10 @@ describe("App Component - Basic Tests", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
-    expect(screen.getByText("Select an Exam")).toBeInTheDocument();
+    expect(screen.getByText("Select an Exam")).not.toBeNull();
   });
 
   it("should initialize with default settings", async () => {
@@ -98,7 +103,7 @@ describe("App Component - Basic Tests", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Click settings button
@@ -107,7 +112,7 @@ describe("App Component - Basic Tests", () => {
 
     // Should show settings panel
     await waitFor(() => {
-      expect(screen.getByText("Settings")).toBeInTheDocument();
+      expect(screen.getByText("Settings")).not.toBeNull();
     });
 
     // Close settings panel
@@ -116,7 +121,7 @@ describe("App Component - Basic Tests", () => {
 
     // Settings panel should be hidden
     await waitFor(() => {
-      expect(screen.queryByText("Settings")).not.toBeInTheDocument();
+      expect(screen.queryByText("Settings")).toBeNull();
     });
   });
 
@@ -124,7 +129,7 @@ describe("App Component - Basic Tests", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Open settings
@@ -132,7 +137,7 @@ describe("App Component - Basic Tests", () => {
     await userEvent.click(settingsButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Settings")).toBeInTheDocument();
+      expect(screen.getByText("Settings")).not.toBeNull();
     });
 
     // Change theme to dark
@@ -144,6 +149,10 @@ describe("App Component - Basic Tests", () => {
       theme: "dark",
       randomizeQuestions: false,
       randomizeChoices: false,
+      narratorEnabled: true,
+      narratorVoice: "",
+      narratorRate: 1.0,
+      narratorPitch: 1.0,
     });
   });
 
@@ -151,7 +160,7 @@ describe("App Component - Basic Tests", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Open settings
@@ -159,7 +168,7 @@ describe("App Component - Basic Tests", () => {
     await userEvent.click(settingsButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Settings")).toBeInTheDocument();
+      expect(screen.getByText("Settings")).not.toBeNull();
     });
 
     // Change question randomization - find the second radio button for question order
@@ -176,6 +185,10 @@ describe("App Component - Basic Tests", () => {
       theme: "light",
       randomizeQuestions: true,
       randomizeChoices: false,
+      narratorEnabled: true,
+      narratorVoice: "",
+      narratorRate: 1.0,
+      narratorPitch: 1.0,
     });
   });
 
@@ -201,11 +214,11 @@ describe("App Component - Basic Tests", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Should show saved exams
-    expect(screen.getByText("Saved Exams")).toBeInTheDocument();
+    expect(screen.getByText("Saved Exams")).not.toBeNull();
 
     // Click clear all button
     const clearButton = screen.getByText("Clear All");
@@ -225,37 +238,37 @@ describe("App Component - Basic Tests", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     expect(
       screen.getByText(
         "AWS Certified Solutions Architect – Associate (SAA-C03)"
       )
-    ).toBeInTheDocument();
+    ).not.toBeNull();
     expect(
       screen.getByText(
         "Design resilient, high-performing, secure, and cost-optimized AWS solutions"
       )
-    ).toBeInTheDocument();
+    ).not.toBeNull();
   });
 
   it("should disable start button when no exam is selected", async () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     const startButton = screen.getByText("Start Exam");
-    expect(startButton).toBeDisabled();
+    expect(startButton).toHaveProperty("disabled", true);
   });
 
   it("should enable start button when exam is selected", async () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Select an exam
@@ -263,6 +276,6 @@ describe("App Component - Basic Tests", () => {
     await userEvent.click(examRadio);
 
     const startButton = screen.getByText("Start Exam");
-    expect(startButton).not.toBeDisabled();
+    expect(startButton).toHaveProperty("disabled", false);
   });
 });

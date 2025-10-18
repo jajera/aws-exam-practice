@@ -53,6 +53,10 @@ export interface AppSettings {
   theme: 'light' | 'dark' | 'system';
   randomizeQuestions: boolean;
   randomizeChoices: boolean;
+  narratorEnabled: boolean;
+  narratorVoice: string;
+  narratorRate: number;
+  narratorPitch: number;
 }
 
 export interface DomainOption {

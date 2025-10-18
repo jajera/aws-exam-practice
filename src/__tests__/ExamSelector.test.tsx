@@ -1,8 +1,9 @@
-import ExamSelector from "@/components/ExamSelector";
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
+import ExamSelector from "../components/ExamSelector";
 
 const mockOnExamSelect = jest.fn();
 const mockOnResumeExam = jest.fn();
@@ -23,12 +24,12 @@ describe("ExamSelector", () => {
       />
     );
 
-    expect(screen.getByText("Select an Exam")).toBeInTheDocument();
+    expect(screen.getByText("Select an Exam")).not.toBeNull();
     expect(
       screen.getByText(
         "AWS Certified Solutions Architect – Associate (SAA-C03)"
       )
-    ).toBeInTheDocument();
+    ).not.toBeNull();
   });
 
   it("should show saved exams when available", () => {
@@ -57,10 +58,10 @@ describe("ExamSelector", () => {
       />
     );
 
-    expect(screen.getByText("Saved Exams")).toBeInTheDocument();
+    expect(screen.getByText("Saved Exams")).not.toBeNull();
     expect(
       screen.getByText("AWS Certified Solutions Architect – Associate")
-    ).toBeInTheDocument();
+    ).not.toBeNull();
   });
 
   it("should not show saved exams section when no saved exams", () => {
@@ -73,7 +74,7 @@ describe("ExamSelector", () => {
       />
     );
 
-    expect(screen.queryByText("Saved Exams")).not.toBeInTheDocument();
+    expect(screen.queryByText("Saved Exams")).toBeNull();
   });
 
   it("should handle exam selection", async () => {
@@ -106,7 +107,7 @@ describe("ExamSelector", () => {
     );
 
     const startButton = screen.getByText("Start Exam");
-    expect(startButton).toBeDisabled();
+    expect(startButton).toHaveProperty("disabled", true);
   });
 
   it("should handle resume exam", async () => {
@@ -193,7 +194,7 @@ describe("ExamSelector", () => {
     const startButton = screen.getByText("Start Exam");
     await userEvent.click(startButton);
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).not.toBeNull();
   });
 
   it("should handle error when starting exam fails", async () => {
@@ -254,7 +255,7 @@ describe("ExamSelector", () => {
     );
 
     // The component shows "Last saved: [date]" format
-    expect(screen.getByText(/Last saved:/)).toBeInTheDocument();
+    expect(screen.getByText(/Last saved:/)).not.toBeNull();
   });
 
   it("should show progress percentage for saved exams", () => {
@@ -297,8 +298,8 @@ describe("ExamSelector", () => {
     );
 
     // The component shows percentage in format "questions (50%)"
-    expect(screen.getByText(/questions \(50%\)/)).toBeInTheDocument();
-    expect(screen.getByText(/questions \(80%\)/)).toBeInTheDocument();
+    expect(screen.getByText(/questions \(50%\)/)).not.toBeNull();
+    expect(screen.getByText(/questions \(80%\)/)).not.toBeNull();
   });
 
   it("should handle multiple saved exams with same exam ID", () => {
@@ -355,6 +356,6 @@ describe("ExamSelector", () => {
       />
     );
 
-    expect(screen.queryByText("Clear All")).not.toBeInTheDocument();
+    expect(screen.queryByText("Clear All")).toBeNull();
   });
 });

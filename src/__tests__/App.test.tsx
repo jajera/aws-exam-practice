@@ -1,11 +1,12 @@
-import App from "@/App";
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom";
 import { render, waitFor } from "@testing-library/react";
+import React from "react";
+import App from "../App";
 
 // Mock the exam data loading
-jest.mock("@/config/examConfig", () => ({
+jest.mock("../config/examConfig", () => ({
   getAvailableExamFiles: jest
     .fn<() => Promise<string[]>>()
     .mockResolvedValue(["saa-c03", "saa-c03-advanced"]),
@@ -52,7 +53,7 @@ global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
         statusText: "OK",
         headers: new Headers(),
         redirected: false,
-        type: "basic",
+        type: "basic" as ResponseType,
         url: url,
         clone: () => ({} as Response),
         body: null,

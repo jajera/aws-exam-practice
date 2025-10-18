@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import React from "react";
 import App from "../App";
 import { ExamData } from "../types/exam";
 
@@ -121,7 +122,7 @@ describe("Start Quiz Button Integration", () => {
 
     // Wait for app to load
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     // Click on an exam radio button
@@ -134,7 +135,7 @@ describe("Start Quiz Button Integration", () => {
 
     // Should show difficulty selection
     await waitFor(() => {
-      expect(screen.getByText("Select Difficulty Level")).toBeInTheDocument();
+      expect(screen.getByText("Select Difficulty Level")).not.toBeNull();
     });
 
     // Click on a difficulty
@@ -149,7 +150,7 @@ describe("Start Quiz Button Integration", () => {
         screen.getByText(
           "Select Domains for AWS Certified Solutions Architect – Associate (SAA-C03)"
         )
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
 
     // Click Start Quiz button
@@ -158,7 +159,7 @@ describe("Start Quiz Button Integration", () => {
 
     // Should show quiz interface
     await waitFor(() => {
-      expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
+      expect(screen.getByText("Question 1 of 2")).not.toBeNull();
     });
   });
 
@@ -167,7 +168,7 @@ describe("Start Quiz Button Integration", () => {
 
     // Navigate to domain selection
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     const examRadio = screen.getByRole("radio");
@@ -177,7 +178,7 @@ describe("Start Quiz Button Integration", () => {
     fireEvent.click(startExamButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Select Difficulty Level")).toBeInTheDocument();
+      expect(screen.getByText("Select Difficulty Level")).not.toBeNull();
     });
 
     const difficultyButton = screen.getByText(
@@ -190,7 +191,7 @@ describe("Start Quiz Button Integration", () => {
         screen.getByText(
           "Select Domains for AWS Certified Solutions Architect – Associate (SAA-C03)"
         )
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
 
     // Toggle a domain off
@@ -203,7 +204,7 @@ describe("Start Quiz Button Integration", () => {
 
     // Should show quiz interface with filtered questions
     await waitFor(() => {
-      expect(screen.getByText("Question 1 of 1")).toBeInTheDocument();
+      expect(screen.getByText("Question 1 of 1")).not.toBeNull();
     });
   });
 
@@ -212,7 +213,7 @@ describe("Start Quiz Button Integration", () => {
 
     // Navigate to domain selection
     await waitFor(() => {
-      expect(screen.getByText("AWS Exam Practice")).toBeInTheDocument();
+      expect(screen.getByText("AWS Exam Practice")).not.toBeNull();
     });
 
     const examRadio = screen.getByRole("radio");
@@ -222,7 +223,7 @@ describe("Start Quiz Button Integration", () => {
     fireEvent.click(startExamButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Select Difficulty Level")).toBeInTheDocument();
+      expect(screen.getByText("Select Difficulty Level")).not.toBeNull();
     });
 
     const difficultyButton = screen.getByText(
@@ -235,7 +236,7 @@ describe("Start Quiz Button Integration", () => {
         screen.getByText(
           "Select Domains for AWS Certified Solutions Architect – Associate (SAA-C03)"
         )
-      ).toBeInTheDocument();
+      ).not.toBeNull();
     });
 
     // Deselect all domains
@@ -248,6 +249,6 @@ describe("Start Quiz Button Integration", () => {
 
     // Start button should be disabled
     const startQuizButton = screen.getByText(/Start Quiz/);
-    expect(startQuizButton).toBeDisabled();
+    expect(startQuizButton).toHaveProperty("disabled", true);
   });
 });

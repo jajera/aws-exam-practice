@@ -1,5 +1,5 @@
-import { shuffleChoices, shuffleQuestions } from "@/utils/arrayUtils";
 import { describe, expect, it } from "@jest/globals";
+import { shuffleChoices, shuffleQuestions } from "../utils/arrayUtils";
 
 describe("Array Utils", () => {
   const mockQuestions = [

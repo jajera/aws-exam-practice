@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ExamData, QuizState } from "../types/exam";
+import { ExamData, QuizState, AppSettings } from "../types/exam";
 import QuestionCard from "./QuestionCard";
 
 interface QuizInterfaceProps {
@@ -11,6 +11,7 @@ interface QuizInterfaceProps {
   onComplete: () => void;
   onExitExam: () => void;
   onEndExam: () => void;
+  settings: AppSettings;
 }
 
 const QuizInterface: React.FC<QuizInterfaceProps> = ({
@@ -22,6 +23,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({
   onComplete,
   onExitExam,
   onEndExam,
+  settings,
 }) => {
   const [showExplanations, setShowExplanations] = useState(false);
   const currentQuestion = examData.questions[quizState.currentQuestionIndex];
@@ -104,6 +106,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({
           selectedAnswer={selectedAnswer}
           onAnswerSelect={handleAnswerSelect}
           showExplanations={showExplanations}
+          settings={settings}
         />
       </div>
 

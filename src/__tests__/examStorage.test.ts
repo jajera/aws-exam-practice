@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import {
   cleanupDuplicateExams,
   clearAllSavedExams,
@@ -8,8 +9,7 @@ import {
   hasIncompleteExams,
   removeCompletedExams,
   saveExamProgress,
-} from "@/utils/examStorage";
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+} from "../utils/examStorage";
 
 // Mock localStorage
 const createLocalStorageMock = () => {
