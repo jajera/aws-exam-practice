@@ -133,7 +133,7 @@ describe("Exam Config", () => {
 
       const config = await getExamConfig("saa-c03");
 
-      expect(fetch).toHaveBeenCalledWith("/data/saa-c03.json");
+      expect(fetch).toHaveBeenCalledWith("./data/saa-c03.json");
       expect(config).toBeTruthy();
       expect(config?.examId).toBe("saa-c03");
     });

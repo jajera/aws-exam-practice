@@ -74,7 +74,7 @@ function App() {
 
   const loadExamData = async (examId: string) => {
     try {
-      const response = await fetch(`/data/${examId}.json`);
+      const response = await fetch(`./data/${examId}.json`);
       if (!response.ok) {
         throw new Error("Failed to load exam data");
       }
@@ -102,7 +102,7 @@ function App() {
     try {
       const examFiles = await getAvailableExamFiles();
       const responses = await Promise.all(
-        examFiles.map((file) => fetch(`/data/${file}.json`))
+        examFiles.map((file) => fetch(`./data/${file}.json`))
       );
 
       const examData = await Promise.all(
@@ -202,7 +202,7 @@ function App() {
       if (!savedExam) return;
 
       // Load the exam data
-      const response = await fetch(`/data/${savedExam.examId}.json`);
+      const response = await fetch(`./data/${savedExam.examId}.json`);
       if (!response.ok) {
         throw new Error("Failed to load exam data");
       }
