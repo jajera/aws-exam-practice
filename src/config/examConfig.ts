@@ -151,7 +151,7 @@ export const getExamConfig = async (
   examId: string
 ): Promise<ExamConfig | undefined> => {
   try {
-    const response = await fetch(`/data/${examId}.json`);
+    const response = await fetch(`./data/${examId}.json`);
     if (!response.ok) return undefined;
 
     const examData = await response.json();
