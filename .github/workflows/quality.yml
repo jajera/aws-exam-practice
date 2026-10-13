@@ -33,7 +33,7 @@ jobs:
           if ! command -v depcheck &> /dev/null; then
             npm install -g depcheck
           fi
-          depcheck --ignores="jest,ts-jest,@types/*,@testing-library/*,identity-obj-proxy,autoprefixer,postcss,tailwindcss,jest-environment-jsdom,markdownlint-cli"
+          depcheck --ignores="jest,ts-jest,@types/*,@testing-library/*,identity-obj-proxy,autoprefixer,postcss,tailwindcss,jest-environment-jsdom"
 
       - name: Check bundle size
         run: |

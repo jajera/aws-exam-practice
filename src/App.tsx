@@ -59,17 +59,22 @@ function App() {
 
   // Load saved exams from localStorage on mount
   useEffect(() => {
-    // Clean up any duplicate exams first
-    cleanupDuplicateExams();
-    // Remove any completed exams
-    removeCompletedExams();
+    try {
+      // Clean up any duplicate exams first
+      cleanupDuplicateExams();
+      // Remove any completed exams
+      removeCompletedExams();
 
-    const saved = getSavedExams();
-    setSavedExams(saved);
+      const saved = getSavedExams();
+      setSavedExams(saved);
 
-    // Always start with exam selection by default
-    setCurrentState("select");
-    setIsInitialized(true);
+      // Always start with exam selection by default
+      setCurrentState("select");
+    } catch (error) {
+      console.error("Error initializing app:", error);
+    } finally {
+      setIsInitialized(true);
+    }
   }, []);
 
   const loadExamData = async (examId: string) => {
